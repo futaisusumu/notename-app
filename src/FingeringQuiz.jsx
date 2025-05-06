@@ -1,183 +1,146 @@
 import { useEffect, useState } from 'react'
-import { Renderer, Stave, StaveNote, Formatter, Accidental } from 'vexflow'
+import { Renderer } from 'vexflow'
+import { Stave, StaveNote, Formatter, Accidental } from 'vexflow'
+import { TREBLE_RANGES, BASS_RANGES, BASS_TUBA_RANGES } from './data/fingeringRanges'
 
-const FINGERING_DATA = {
-    'g/3': { jp: 'ソ', fingering: '13' },
-    'g#/3': { jp: 'ソ♯', fingering: '23' },
-    'a/3': { jp: 'ラ', fingering: '12' },
-    'a#/3': { jp: 'ラ♯', fingering: '1' },
-    'bb/3': { jp: 'シ♭', fingering: '1' },
-    'b/3': { jp: 'シ', fingering: '2' },
-    'c/4': { jp: 'ド', fingering: '0' },
-    'c#/4': { jp: 'ド♯', fingering: '123' },
-    'd/4': { jp: 'レ', fingering: '13' },
-    'd#/4': { jp: 'レ♯', fingering: '23' },
-    'eb/4': { jp: 'ミ♭', fingering: '23' },
-    'e/4': { jp: 'ミ', fingering: '12' },
-    'f/4': { jp: 'ファ', fingering: '1' },
-    'f#/4': { jp: 'ファ♯', fingering: '2' },
-    'g/4': { jp: 'ソ', fingering: '0' },
-    'g#/4': { jp: 'ソ♯', fingering: '23' },
-    'a/4': { jp: 'ラ', fingering: '12' },
-    'a#/4': { jp: 'ラ♯', fingering: '1' },
-    'bb/4': { jp: 'シ♭', fingering: '1' },
-    'b/4': { jp: 'シ', fingering: '2' },
-    'c/5': { jp: 'ド', fingering: '0' },
-    'c#/5': { jp: 'ド♯', fingering: '12' },
-    'd/5': { jp: 'レ', fingering: '1' },
-    'd#/5': { jp: 'レ♯', fingering: '2' },
-    'eb/5': { jp: 'ミ♭', fingering: '2' },
-    'e/5': { jp: 'ミ', fingering: '0' },
-    'f/5': { jp: 'ファ', fingering: '1' },
-    'f#/5': { jp: 'ファ♯', fingering: '2' },
-    'g/5': { jp: 'ソ', fingering: '0' },
-    'g#/5': { jp: 'ソ♯', fingering: '23' },
-    'a/5': { jp: 'ラ', fingering: '12' },
-    'a#/5': { jp: 'ラ♯', fingering: '1' },
-    'bb/5': { jp: 'シ♭', fingering: '1' },
-    'b/5': { jp: 'シ', fingering: '2' },
-    'c/6': { jp: 'ド', fingering: '0' },
-    'd/6': { jp: 'レ', fingering: '1' },
-    'e/6': { jp: 'ミ', fingering: '0' },
-  }
-  
-  const LEVEL_KEYS = {
-    1: [
-      'g/4', 'a/4', 'b/4', 'c/5', 'd/5', 'e/5', 'f/5'
-    ],
-    2: [
-      'g/4', 'a/4', 'b/4', 'bb/4', 'c/5', 'd/5', 'e/5', 'f/5', 'f#/4'
-    ],
-    3: [
-      'g/4', 'a/4', 'b/4', 'bb/4', 'c/5', 'd/5', 'e/5', 'f/5', 'f#/4',
-      'c#/4', 'd#/4', 'eb/4'
-    ],
-    4: [
-      'g/4', 'a/4', 'b/4', 'bb/4', 'c/5', 'd/5', 'e/5', 'f/5', 'f#/4',
-      'c#/4', 'd#/4', 'eb/4', 'g#/4', 'a#/4', 'd#/5'
-    ],
-    5: Object.keys(FINGERING_DATA),
-  }
-  
-
-const FINGERINGS = ['0', '1', '2', '3', '12', '13', '23', '123']
 
 function FingeringQuiz({ onBack }) {
+  const [clef, setClef] = useState(null)
+  const [bassMode, setBassMode] = useState('normal')
   const [level, setLevel] = useState(null)
-  const [noteKeys, setNoteKeys] = useState([])
-  const [question, setQuestion] = useState(null)
-  const [questionNumber, setQuestionNumber] = useState(1)
+  const [noteList, setNoteList] = useState([])
+  const [currentNote, setCurrentNote] = useState(null)
+  const [questionNumber, setQuestionNumber] = useState(0)
   const [score, setScore] = useState(0)
   const [message, setMessage] = useState('')
 
-  useEffect(() => {
-    if (level) {
-      const keys = LEVEL_KEYS[level] || []
-      setNoteKeys(keys)
-      const first = getRandomNote(null, keys)
-      setQuestion(first)
+
+
+  const FINGERING_DATA = {
+    'c/4': '0', 'd/4': '13', 'e/4': '12', 'f/4': '1', 'g/4': '0',
+    'a/4': '12', 'b/4': '2', 'c/5': '0',
+    'f#/4': '2', 'bb/4': '1',
+    'c#/4': '123', 'eb/4': '23',
+    'g#/4': '23', 'd#/4': '2', 'ab/4': '23',
+    'a#/4': '1'
+  }
+
+  const BUTTONS = ['0', '1', '2', '3', '12', '13', '23', '123']
+
+  const startLevel = (lv) => {
+    let range = []
+    if (clef === 'treble') {
+      for (let i = 1; i <= lv; i++) {
+        if (TREBLE_RANGES[i]) range = range.concat(TREBLE_RANGES[i])
+      }
+    } else if (clef === 'bass' && bassMode === 'normal') {
+      for (let i = 1; i <= lv; i++) {
+        if (BASS_RANGES[i]) range = range.concat(BASS_RANGES[i])
+      }
+    } else if (clef === 'bass' && bassMode === 'tuba') {
+      for (let i = 1; i <= lv; i++) {
+        if (BASS_TUBA_RANGES[i]) range = range.concat(BASS_TUBA_RANGES[i])
+      }
     }
-  }, [level])
+    setNoteList(range)
+    setLevel(lv)
+    setScore(0)
+    setQuestionNumber(0)
+    setMessage('')
+    const first = getRandomNote(range, null)
+    setCurrentNote(first)
+  }
+
+  const getRandomNote = (range, prevKey) => {
+    let next
+    do {
+      const n = range[Math.floor(Math.random() * range.length)]
+      const key = `${n.note}/${n.octave}`
+      const fingering = FINGERING_DATA[key]
+      next = { ...n, key, fingering }
+    } while (!next.fingering || next.key === prevKey)
+    return next
+  }
 
   useEffect(() => {
-    if (!question) return
-    const div = document.getElementById('staff-fingering')
+    if (!currentNote) return
+    const div = document.getElementById('staff')
     div.innerHTML = ''
     const renderer = new Renderer(div, Renderer.Backends.SVG)
     renderer.resize(250, 150)
     const context = renderer.getContext()
     const stave = new Stave(10, 40, 230)
-    stave.addClef('treble').setContext(context).draw()
-
-    const note = new StaveNote({ keys: [question.key], duration: 'q', clef: 'treble' })
-
-    const noteName = question.key.split('/')[0] // 'b', 'bb', etc.
-    if (noteName.includes('#')) {
-      note.addModifier(new Accidental('#'), 0)
-    } else if (noteName.endsWith('b') && noteName.length > 1) {
-      note.addModifier(new Accidental('b'), 0)
+    stave.addClef(clef).setContext(context).draw()
+    const note = new StaveNote({ keys: [currentNote.key], duration: 'q', clef })
+    if (currentNote.note.includes('#') || currentNote.note.includes('b')) {
+      note.addModifier(new Accidental(currentNote.note.includes('#') ? '#' : 'b'))
     }
-    
-
     Formatter.FormatAndDraw(context, stave, [note])
-  }, [question])
+  }, [currentNote])
 
-  const getRandomNote = (prevKey, keys) => {
-    let nextKey
-    do {
-      nextKey = keys[Math.floor(Math.random() * keys.length)]
-    } while (prevKey && nextKey === prevKey)
-
-        const { jp, fingering } = FINGERING_DATA[nextKey]
-        return { key: nextKey, jp, fingering }
-  }
-
-  const handleAnswer = (input) => {
-    console.log("🎯 出題キー:", question.key, "→ 表示名:", question.jp, "→ 運指:", question.fingering)
-
-    const isCorrect = String(input) === String(question.fingering)
-    if (isCorrect) {
+  const handleAnswer = (ans) => {
+    const correct = ans === currentNote.fingering
+    if (correct) {
       setScore(score + 1)
       setMessage('⭕ 正解！')
     } else {
-      setMessage(`❌ 不正解… 正解は ${formatFingering(question.fingering)}`)
+      setMessage(`❌ 不正解… 正解は「${currentNote.fingering}」`)
     }
-
-    if (questionNumber < 10) {
+    if (questionNumber < 9) {
       setTimeout(() => {
-        setQuestion(getRandomNote(question.key, noteKeys))
+        const next = getRandomNote(noteList, currentNote.key)
+        setCurrentNote(next)
         setQuestionNumber(questionNumber + 1)
         setMessage('')
       }, 1000)
     } else {
-      setMessage(`🎉 終了！スコア：${score + (isCorrect ? 1 : 0)} / 10`)
+      setMessage(`🎉 終了！スコア：${score + (correct ? 1 : 0)} / 10`)
     }
   }
 
-  const formatFingering = (fingering) => {
-    if (fingering === '0') return '（開放）'
-    return fingering.split('').join('\n')
+  if (!clef) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <h2>記号を選んでください</h2>
+        <button onClick={() => setClef('treble')}>🎼 ト音記号</button>
+        <button onClick={() => setClef('bass')}>𝄢 ヘ音記号</button>
+        <button onClick={onBack}>← 戻る</button>
+      </div>
+    )
+  }
+
+  if (clef === 'bass' && !bassMode) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <h2>ヘ音記号の種類を選んでください</h2>
+        <button onClick={() => setBassMode('normal')}>ユーフォ／トロンボーン</button>
+        <button onClick={() => setBassMode('tuba')}>チューバ</button>
+        <button onClick={() => setClef(null)}>← 記号選択に戻る</button>
+      </div>
+    )
+  }
+
+  if (!level) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <h2>レベルを選んでください</h2>
+        {[1, 2, 3, 4, 5].map((lv) => (
+          <button key={lv} onClick={() => startLevel(lv)} style={{ margin: '5px' }}>レベル {lv}</button>
+        ))}
+        <br /><br />
+        <button onClick={() => setClef(null)}>← 記号選択に戻る</button>
+      </div>
+    )
   }
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <button onClick={onBack}>← 戻る</button>
-
-      {!level ? (
-        <>
-          <h2>レベルを選んでください</h2>
-          {[1, 2, 3, 4, 5].map((lv) => (
-            <button key={lv} onClick={() => setLevel(lv)} style={{ margin: '10px', padding: '10px 20px' }}>
-              レベル{lv}
-            </button>
-          ))}
-        </>
-      ) : (
-        <>
-          <h2>運指クイズ（{questionNumber} / 10） レベル{level}</h2>
-          <div id="staff-fingering" style={{ margin: '20px auto' }}></div>
-          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {FINGERINGS.map((f) => (
-              <button
-                key={f}
-                onClick={() => handleAnswer(f)}
-                style={{
-                  margin: '10px',
-                  padding: '5px 10px',
-                  fontSize: '1.1em',
-                  whiteSpace: 'pre-line',
-                  lineHeight: '1.2em',
-                  minWidth: '40px',
-                  minHeight: '50px',
-                }}
-              >
-                {f === '0' ? '開放' : f.split('').join('\n')}
-              </button>
-            ))}
-          </div>
-          <div style={{ marginTop: '20px', fontSize: '1.2em' }}>{message}</div>
-        </>
-      )}
+      <button onClick={() => setLevel(null)}>← レベル選択に戻る</button>
+      <div id="staff" style={{ margin: '20px auto' }}></div>
+      {BUTTONS.map((b) => (
+        <button key={b} onClick={() => handleAnswer(b)} style={{ display: 'block', margin: '5px auto' }}>{b.split('').join('\n')}</button>
+      ))}
+      <p>{message}</p>
     </div>
   )
 }
