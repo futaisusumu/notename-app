@@ -1,19 +1,13 @@
 import { useEffect, useState } from 'react'
-<<<<<<< HEAD
-=======
 import { recordHistory } from './services/history'
->>>>>>> 61b7f86 (5/19--)
 import { Renderer } from 'vexflow'
 import { Stave, StaveNote, Formatter, Accidental } from 'vexflow'
 import { TREBLE_NOTE_RANGES, BASS_NOTE_RANGES, BASS_TUBA_NOTE_RANGES } from './data/noteNameRanges'
 
-<<<<<<< HEAD
-=======
 import { doc, collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { auth, db } from './firebase'
 
 
->>>>>>> 61b7f86 (5/19--)
 function NoteNameQuiz({ onBack }) {
   const [clef, setClef] = useState(null)
   const [bassMode, setBassMode] = useState('normal')
@@ -23,23 +17,11 @@ function NoteNameQuiz({ onBack }) {
   const [questionNumber, setQuestionNumber] = useState(0)
   const [score, setScore] = useState(0)
   const [message, setMessage] = useState('')
-<<<<<<< HEAD
-=======
   const [usedKeys, setUsedKeys] = useState([])
->>>>>>> 61b7f86 (5/19--)
  
   
 
   const BUTTONS = clef === 'bass'
-<<<<<<< HEAD
-    ? ['ド', 'レ', 'ミ', 'ファ', 'ファ♯', 'ソ', 'ラ', 'シ', 'シ♭']
-    : ['ド', 'レ', 'ミ', 'ファ', 'ソ', 'ラ', 'シ']
-
-  const nextNote = (prevKey = null) => {
-    let next
-    do {
-      const n = noteList[Math.floor(Math.random() * noteList.length)]
-=======
     ? ['ド','ド♯', 'レ', 'ミ', 'ファ', 'ファ♯', 'ソ', 'ラ', 'シ'
     ]
     : ['ド', 'レ', 'ミ', 'ファ', 'ソ', 'ラ', 'シ']
@@ -53,20 +35,16 @@ function NoteNameQuiz({ onBack }) {
     
     do {
       const n = pool[Math.floor(Math.random() * pool.length)]
->>>>>>> 61b7f86 (5/19--)
       next = {
         ...n,
         key: `${n.note}/${n.octave}`,
         letter: n.jp
       }
     } while (prevKey && next.key === prevKey)
-<<<<<<< HEAD
-=======
 
     // ✅ 出題済みとして記録
     setUsedKeys(prev => [...prev, next.key])
      
->>>>>>> 61b7f86 (5/19--)
     setCurrentNote(next)
   }
 
@@ -75,11 +53,7 @@ function NoteNameQuiz({ onBack }) {
     const div = document.getElementById('staff')
     div.innerHTML = ''
     const renderer = new Renderer(div, Renderer.Backends.SVG)
-<<<<<<< HEAD
-    renderer.resize(250, 150)
-=======
     renderer.resize(250, 180)
->>>>>>> 61b7f86 (5/19--)
     const context = renderer.getContext()
     const stave = new Stave(10, 40, 230)
     stave.addClef(clef)
@@ -87,20 +61,12 @@ function NoteNameQuiz({ onBack }) {
       stave.addKeySignature('Bb')
     }
     stave.setContext(context).draw()
-<<<<<<< HEAD
-=======
     
->>>>>>> 61b7f86 (5/19--)
     const note = new StaveNote({
       keys: [currentNote.key],
       duration: 'q',
       clef: clef
     })
-<<<<<<< HEAD
-    if (currentNote.accidental) {
-      note.addModifier(new Accidental(currentNote.accidental), 0)
-    }
-=======
 
    // 🎯 臨時記号処理（ヘ音記号では調号b-dur＝bb, eb）
     const KEY_SIGNATURE_FLATS = clef === 'bass' ? ['bb', 'eb'] : []
@@ -127,7 +93,6 @@ function NoteNameQuiz({ onBack }) {
      }
     }
 
->>>>>>> 61b7f86 (5/19--)
     Formatter.FormatAndDraw(context, stave, [note])
   }, [currentNote])
 
@@ -139,30 +104,13 @@ function NoteNameQuiz({ onBack }) {
     } else {
       setMessage(`❌ 不正解… 正解は「${currentNote.jp}」`)
     }
-<<<<<<< HEAD
-    if (questionNumber < 9) {
-=======
     if (questionNumber < 19) {
->>>>>>> 61b7f86 (5/19--)
       setTimeout(() => {
         nextNote(currentNote.key)
         setQuestionNumber(questionNumber + 1)
         setMessage('')
       }, 1000)
     } else {
-<<<<<<< HEAD
-      setMessage(`🎉 終了！スコア：${score + (correct ? 1 : 0)} / 10`)
-    }
-  }
-
-  const startLevel = (lv) => {
-    let notes
-    if (clef === 'bass') {
-      notes = bassMode === 'tuba' ? BASS_TUBA_NOTE_RANGES[lv] : BASS_NOTE_RANGES[lv]
-    } else {
-      notes = TREBLE_NOTE_RANGES[lv]
-    }
-=======
        const finalScore = score + (correct ? 1 : 0)
        setMessage(`🎉 終了！スコア：${finalScore} / 20`)
       // Firestore に記録
@@ -203,7 +151,6 @@ function NoteNameQuiz({ onBack }) {
     }
 
     setUsedKeys([])
->>>>>>> 61b7f86 (5/19--)
     setLevel(lv)
     setNoteList(notes)
     setScore(0)
@@ -243,12 +190,6 @@ function NoteNameQuiz({ onBack }) {
   return (
     <div style={{ textAlign: 'center' }}>
       <button onClick={() => setLevel(null)}>← レベル選択に戻る</button>
-<<<<<<< HEAD
-      <div id="staff" style={{ margin: '20px auto' }}></div>
-      {BUTTONS.map((l) => (
-        <button key={l} onClick={() => handleAnswer(l)}>{l}</button>
-      ))}
-=======
   
       <div id="staff" style={{ margin: '20px auto', minHeight: '140px' }}></div>  
   
@@ -260,15 +201,11 @@ function NoteNameQuiz({ onBack }) {
         ))}
       </div>
   
->>>>>>> 61b7f86 (5/19--)
       <p>{message}</p>
     </div>
   )
   
-<<<<<<< HEAD
-=======
   
->>>>>>> 61b7f86 (5/19--)
 }
 
 export default NoteNameQuiz

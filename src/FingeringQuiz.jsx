@@ -2,13 +2,6 @@ import { useEffect, useState } from 'react'
 import { Renderer } from 'vexflow'
 import { Stave, StaveNote, Formatter, Accidental } from 'vexflow'
 import { TREBLE_RANGES, BASS_RANGES, BASS_TUBA_RANGES } from './data/fingeringRanges'
-<<<<<<< HEAD
-
-
-function FingeringQuiz({ onBack }) {
-  const [clef, setClef] = useState(null)
-  const [bassMode, setBassMode] = useState('normal')
-=======
 import { TREBLE_FINGERING_DATA } from './data/fingeringRanges'
 import { BASS_FINGERING_DATA } from './data/fingeringRanges'
 import { TUBA_FINGERING_DATA } from './data/fingeringRanges'
@@ -19,29 +12,12 @@ function FingeringQuiz({ onBack }) {
   const [clef, setClef] = useState(null);         // 'treble' or 'bass'
   const [instrument, setInstrument] = useState(null); // 'euphonium', 'trombone', 'tuba'
   const [bassMode, setBassMode] = useState(null)
->>>>>>> 61b7f86 (5/19--)
   const [level, setLevel] = useState(null)
   const [noteList, setNoteList] = useState([])
   const [currentNote, setCurrentNote] = useState(null)
   const [questionNumber, setQuestionNumber] = useState(0)
   const [score, setScore] = useState(0)
   const [message, setMessage] = useState('')
-<<<<<<< HEAD
-
-
-
-  const FINGERING_DATA = {
-    'c/4': '0', 'd/4': '13', 'e/4': '12', 'f/4': '1', 'g/4': '0',
-    'a/4': '12', 'b/4': '2', 'c/5': '0',
-    'f#/4': '2', 'bb/4': '1',
-    'c#/4': '123', 'eb/4': '23',
-    'g#/4': '23', 'd#/4': '2', 'ab/4': '23',
-    'a#/4': '1'
-  }
-
-  const BUTTONS = ['0', '1', '2', '3', '12', '13', '23', '123']
-
-=======
   const [usedKeys, setUsedKeys] = useState([])
 
   const SLIDE_BUTTONS = ['1', '2', '3', '4', '5', '6', '7']
@@ -55,7 +31,6 @@ function FingeringQuiz({ onBack }) {
     return {}
   }
 
->>>>>>> 61b7f86 (5/19--)
   const startLevel = (lv) => {
     let range = []
     if (clef === 'treble') {
@@ -71,8 +46,6 @@ function FingeringQuiz({ onBack }) {
         if (BASS_TUBA_RANGES[i]) range = range.concat(BASS_TUBA_RANGES[i])
       }
     }
-<<<<<<< HEAD
-=======
 
     // Firebaseに記録
     const user = auth.currentUser
@@ -87,7 +60,6 @@ function FingeringQuiz({ onBack }) {
       })
     }
 
->>>>>>> 61b7f86 (5/19--)
     setNoteList(range)
     setLevel(lv)
     setScore(0)
@@ -95,18 +67,6 @@ function FingeringQuiz({ onBack }) {
     setMessage('')
     const first = getRandomNote(range, null)
     setCurrentNote(first)
-<<<<<<< HEAD
-  }
-
-  const getRandomNote = (range, prevKey) => {
-    let next
-    do {
-      const n = range[Math.floor(Math.random() * range.length)]
-      const key = `${n.note}/${n.octave}`
-      const fingering = FINGERING_DATA[key]
-      next = { ...n, key, fingering }
-    } while (!next.fingering || next.key === prevKey)
-=======
     setUsedKeys([])
   }
 
@@ -143,7 +103,6 @@ function FingeringQuiz({ onBack }) {
     // 🔽 出題済みとして記録
     setUsedKeys(prev => [...prev, next.key])
 
->>>>>>> 61b7f86 (5/19--)
     return next
   }
 
@@ -152,16 +111,6 @@ function FingeringQuiz({ onBack }) {
     const div = document.getElementById('staff')
     div.innerHTML = ''
     const renderer = new Renderer(div, Renderer.Backends.SVG)
-<<<<<<< HEAD
-    renderer.resize(250, 150)
-    const context = renderer.getContext()
-    const stave = new Stave(10, 40, 230)
-    stave.addClef(clef).setContext(context).draw()
-    const note = new StaveNote({ keys: [currentNote.key], duration: 'q', clef })
-    if (currentNote.note.includes('#') || currentNote.note.includes('b')) {
-      note.addModifier(new Accidental(currentNote.note.includes('#') ? '#' : 'b'))
-    }
-=======
     renderer.resize(250, 180)
     const context = renderer.getContext()
     const stave = new Stave(10, 40, 230)
@@ -199,7 +148,6 @@ function FingeringQuiz({ onBack }) {
       }
     }
 
->>>>>>> 61b7f86 (5/19--)
     Formatter.FormatAndDraw(context, stave, [note])
   }, [currentNote])
 
@@ -211,11 +159,7 @@ function FingeringQuiz({ onBack }) {
     } else {
       setMessage(`❌ 不正解… 正解は「${currentNote.fingering}」`)
     }
-<<<<<<< HEAD
-    if (questionNumber < 9) {
-=======
     if (questionNumber < 19) {
->>>>>>> 61b7f86 (5/19--)
       setTimeout(() => {
         const next = getRandomNote(noteList, currentNote.key)
         setCurrentNote(next)
@@ -223,9 +167,6 @@ function FingeringQuiz({ onBack }) {
         setMessage('')
       }, 1000)
     } else {
-<<<<<<< HEAD
-      setMessage(`🎉 終了！スコア：${score + (correct ? 1 : 0)} / 10`)
-=======
       setMessage(`🎉 終了！スコア：${score + (correct ? 1 : 0)} / 20`)
       const user = auth.currentUser
       if (user) {
@@ -238,7 +179,6 @@ function FingeringQuiz({ onBack }) {
           timestamp: serverTimestamp()
         })
       }
->>>>>>> 61b7f86 (5/19--)
     }
   }
 
@@ -246,22 +186,6 @@ function FingeringQuiz({ onBack }) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <h2>記号を選んでください</h2>
-<<<<<<< HEAD
-        <button onClick={() => setClef('treble')}>🎼 ト音記号</button>
-        <button onClick={() => setClef('bass')}>𝄢 ヘ音記号</button>
-        <button onClick={onBack}>← 戻る</button>
-      </div>
-    )
-  }
-
-  if (clef === 'bass' && !bassMode) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h2>ヘ音記号の種類を選んでください</h2>
-        <button onClick={() => setBassMode('normal')}>ユーフォ／トロンボーン</button>
-        <button onClick={() => setBassMode('tuba')}>チューバ</button>
-        <button onClick={() => setClef(null)}>← 記号選択に戻る</button>
-=======
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', marginTop: '24px' }}>
           <button onClick={() => {
             setClef('treble');
@@ -293,7 +217,6 @@ function FingeringQuiz({ onBack }) {
 
           <button onClick={onBack}>← 戻る</button>
         </div>
->>>>>>> 61b7f86 (5/19--)
       </div>
     )
   }
@@ -306,14 +229,10 @@ function FingeringQuiz({ onBack }) {
           <button key={lv} onClick={() => startLevel(lv)} style={{ margin: '5px' }}>レベル {lv}</button>
         ))}
         <br /><br />
-<<<<<<< HEAD
-        <button onClick={() => setClef(null)}>← 記号選択に戻る</button>
-=======
         <button onClick={() => {
           setBassMode(null)
           setClef(null)
         }}>← 記号選択に戻る</button>
->>>>>>> 61b7f86 (5/19--)
       </div>
     )
   }
@@ -322,11 +241,6 @@ function FingeringQuiz({ onBack }) {
     <div style={{ textAlign: 'center' }}>
       <button onClick={() => setLevel(null)}>← レベル選択に戻る</button>
       <div id="staff" style={{ margin: '20px auto' }}></div>
-<<<<<<< HEAD
-      {BUTTONS.map((b) => (
-        <button key={b} onClick={() => handleAnswer(b)} style={{ display: 'block', margin: '5px auto' }}>{b.split('').join('\n')}</button>
-      ))}
-=======
 
       <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
         {BUTTONS.map((b) => (
@@ -341,7 +255,6 @@ function FingeringQuiz({ onBack }) {
         ))}
       </div>
 
->>>>>>> 61b7f86 (5/19--)
       <p>{message}</p>
     </div>
   )

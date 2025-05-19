@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
   export const TREBLE_FINGERING_DATA = {
     // 低音域（F#3〜B3）
     'f#/3': '123',
@@ -157,7 +155,6 @@ export const TUBA_FINGERING_DATA = {
     'bb/4': '1',
   }  
 
->>>>>>> 61b7f86 (5/19--)
 export const TREBLE_RANGES = {
     1: [
       { note: 'c', octave: 4, jp: 'ド' },
@@ -181,16 +178,6 @@ export const TREBLE_RANGES = {
       { note: 'g#', octave: 4, jp: 'ソ♯' },
       { note: 'd#', octave: 4, jp: 'レ♯' },
       { note: 'ab', octave: 4, jp: 'ラ♭' },
-<<<<<<< HEAD
-    ],
-    5: [
-      { note: 'a#', octave: 4, jp: 'ラ♯' },
-    ],
-  }
-
-export const BASS_RANGES = TREBLE_RANGES
-export const BASS_TUBA_RANGES = TREBLE_RANGES
-=======
       { note: 'db', octave: 4, jp: 'レ♭' },
     ],
     5: [
@@ -293,4 +280,3 @@ export const TROMBONE_RANGES = {
   ],
 
 }
->>>>>>> 61b7f86 (5/19--)
