@@ -12,6 +12,7 @@ export const TREBLE_NOTE_RANGES = {
     2: [
       { note: 'a', octave: 3, jp: 'ラ' },
       { note: 'b', octave: 3, jp: 'シ' },
+<<<<<<< HEAD
       { note: 'c', octave: 4, jp: 'ド' },
       { note: 'd', octave: 4, jp: 'レ' },
       { note: 'e', octave: 4, jp: 'ミ' },
@@ -20,11 +21,14 @@ export const TREBLE_NOTE_RANGES = {
       { note: 'a', octave: 4, jp: 'ラ' },
       { note: 'b', octave: 4, jp: 'シ' },
       { note: 'c', octave: 5, jp: 'ド' },
+=======
+>>>>>>> 61b7f86 (5/19--)
       { note: 'd', octave: 5, jp: 'レ' },
       { note: 'e', octave: 5, jp: 'ミ' },
     ],
     3: [
       { note: 'g', octave: 3, jp: 'ソ' },
+<<<<<<< HEAD
       { note: 'a', octave: 3, jp: 'ラ' },
       { note: 'b', octave: 3, jp: 'シ' },
       { note: 'c', octave: 4, jp: 'ド' },
@@ -37,11 +41,14 @@ export const TREBLE_NOTE_RANGES = {
       { note: 'c', octave: 5, jp: 'ド' },
       { note: 'd', octave: 5, jp: 'レ' },
       { note: 'e', octave: 5, jp: 'ミ' },
+=======
+>>>>>>> 61b7f86 (5/19--)
       { note: 'f', octave: 5, jp: 'ファ' },
       { note: 'g', octave: 5, jp: 'ソ' },
       { note: 'a', octave: 5, jp: 'ラ' },
     ],
     4: [
+<<<<<<< HEAD
       { note: 'g', octave: 3, jp: 'ソ' },
       { note: 'a', octave: 3, jp: 'ラ' },
       { note: 'b', octave: 3, jp: 'シ' },
@@ -58,6 +65,8 @@ export const TREBLE_NOTE_RANGES = {
       { note: 'f', octave: 5, jp: 'ファ' },
       { note: 'g', octave: 5, jp: 'ソ' },
       { note: 'a', octave: 5, jp: 'ラ' },
+=======
+>>>>>>> 61b7f86 (5/19--)
       { note: 'b', octave: 5, jp: 'シ' },
       { note: 'c', octave: 6, jp: 'ド' },
       { note: 'd', octave: 6, jp: 'レ' },
@@ -67,6 +76,7 @@ export const TREBLE_NOTE_RANGES = {
     5: [
       { note: 'g', octave: 3, jp: 'ソ' },
       { note: 'a', octave: 3, jp: 'ラ' },
+<<<<<<< HEAD
       { note: 'b', octave: 3, jp: 'シ' },
       { note: 'c', octave: 4, jp: 'ド' },
       { note: 'd', octave: 4, jp: 'レ' },
@@ -86,6 +96,8 @@ export const TREBLE_NOTE_RANGES = {
       { note: 'd', octave: 6, jp: 'レ' },
       { note: 'e', octave: 6, jp: 'ミ' },
       { note: 'f', octave: 6, jp: 'ファ' },
+=======
+>>>>>>> 61b7f86 (5/19--)
     ]
   }
   
@@ -101,6 +113,7 @@ export  const BASS_NOTE_RANGES = {
       { note: 'bb', octave: 3, jp: 'ド' },
     ],
     2: [
+<<<<<<< HEAD
       { note: 'bb', octave: 2, jp: 'ド' },
       { note: 'c', octave: 3, jp: 'レ' },
       { note: 'd', octave: 3, jp: 'ミ' },
@@ -122,12 +135,19 @@ export  const BASS_NOTE_RANGES = {
       { note: 'g', octave: 3, jp: 'ラ' },
       { note: 'a', octave: 3, jp: 'シ' },
       { note: 'bb', octave: 3, jp: 'ド' },
+=======
+      { note: 'e', octave: 3, jp: 'ファ♯', accidental: 'n' },
+      { note: 'b', octave: 3, jp: 'ド♯' },
+    ],
+    3: [
+>>>>>>> 61b7f86 (5/19--)
       { note: 'c', octave: 4, jp: 'レ' },
       { note: 'd', octave: 4, jp: 'ミ' },
     ],
     4: [
       { note: 'g', octave: 2, jp: 'ラ' },
       { note: 'a', octave: 2, jp: 'シ' },
+<<<<<<< HEAD
       { note: 'bb', octave: 2, jp: 'ド' },
       { note: 'c', octave: 3, jp: 'レ' },
       { note: 'd', octave: 3, jp: 'ミ' },
@@ -139,21 +159,35 @@ export  const BASS_NOTE_RANGES = {
       { note: 'bb', octave: 3, jp: 'ド' },
       { note: 'c', octave: 4, jp: 'レ' },
       { note: 'd', octave: 4, jp: 'ミ' },
+=======
+>>>>>>> 61b7f86 (5/19--)
       { note: 'eb', octave: 4, jp: 'ファ' },
     ],
     5: [
       { note: 'f', octave: 2, jp: 'ソ' },
+<<<<<<< HEAD
       { note: 'g', octave: 2, jp: 'ラ' },
       { note: 'a', octave: 2, jp: 'シ' },
+=======
+      { note: 'e', octave: 4, jp: 'ファ♯', accidental: 'n' },
+    ]
+  }
+  export  const TROMBONE_NOTE_RANGES = {
+    1: [
+>>>>>>> 61b7f86 (5/19--)
       { note: 'bb', octave: 2, jp: 'ド' },
       { note: 'c', octave: 3, jp: 'レ' },
       { note: 'd', octave: 3, jp: 'ミ' },
       { note: 'eb', octave: 3, jp: 'ファ' },
+<<<<<<< HEAD
       { note: 'e', octave: 3, jp: 'ファ♯', accidental: 'n' },
+=======
+>>>>>>> 61b7f86 (5/19--)
       { note: 'f', octave: 3, jp: 'ソ' },
       { note: 'g', octave: 3, jp: 'ラ' },
       { note: 'a', octave: 3, jp: 'シ' },
       { note: 'bb', octave: 3, jp: 'ド' },
+<<<<<<< HEAD
       { note: 'c', octave: 4, jp: 'レ' },
       { note: 'd', octave: 4, jp: 'ミ' },
       { note: 'eb', octave: 4, jp: 'ファ' },
@@ -161,6 +195,27 @@ export  const BASS_NOTE_RANGES = {
     ]
   }
   
+=======
+    ],
+    2: [
+      { note: 'e', octave: 3, jp: 'ファ♯', accidental: 'n' },
+      { note: 'b', octave: 3, jp: 'ド♯' },
+    ],
+    3: [
+      { note: 'c', octave: 4, jp: 'レ' },
+      { note: 'd', octave: 4, jp: 'ミ' },
+    ],
+    4: [
+      { note: 'g', octave: 2, jp: 'ラ' },
+      { note: 'a', octave: 2, jp: 'シ' },
+      { note: 'eb', octave: 4, jp: 'ファ' },
+    ],
+    5: [
+      { note: 'f', octave: 2, jp: 'ソ' },
+      { note: 'e', octave: 4, jp: 'ファ♯', accidental: 'n' },
+    ]
+  } 
+>>>>>>> 61b7f86 (5/19--)
   export  const BASS_TUBA_NOTE_RANGES = {
     1: [
       { note: 'bb', octave: 1, jp: 'ド' },
@@ -173,6 +228,7 @@ export  const BASS_NOTE_RANGES = {
       { note: 'bb', octave: 2, jp: 'ド' },
     ],
     2: [
+<<<<<<< HEAD
       { note: 'g', octave: 1, jp: 'ラ' },
       { note: 'a', octave: 1, jp: 'シ' },
       { note: 'bb', octave: 1, jp: 'ド' },
@@ -233,5 +289,23 @@ export  const BASS_NOTE_RANGES = {
       { note: 'bb', octave: 2, jp: 'ド' },
       { note: 'c', octave: 3, jp: 'レ' },
       { note: 'd', octave: 3, jp: 'ミ' },
+=======
+      { note: 'e', octave: 2, jp: 'ファ♯', accidental: 'n' },
+      { note: 'b', octave: 2, jp: 'ド♯' },
+
+    ],
+    3: [
+      { note: 'c', octave: 3, jp: 'レ' },
+      { note: 'd', octave: 3, jp: 'ミ' },
+    ],
+    4: [
+      { note: 'g', octave: 1, jp: 'ラ' },
+      { note: 'a', octave: 1, jp: 'シ' },
+      { note: 'eb', octave: 3, jp: 'ファ' },
+    ],
+    5: [
+      { note: 'f', octave: 1, jp: 'ソ' },
+      { note: 'e', octave: 3, jp: 'ファ♯', accidental: 'n' },
+>>>>>>> 61b7f86 (5/19--)
     ]
   }

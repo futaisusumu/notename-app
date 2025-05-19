@@ -1,8 +1,19 @@
 import { useEffect, useState } from 'react'
+<<<<<<< HEAD
+=======
+import { recordHistory } from './services/history'
+>>>>>>> 61b7f86 (5/19--)
 import { Renderer } from 'vexflow'
 import { Stave, StaveNote, Formatter, Accidental } from 'vexflow'
 import { TREBLE_NOTE_RANGES, BASS_NOTE_RANGES, BASS_TUBA_NOTE_RANGES } from './data/noteNameRanges'
 
+<<<<<<< HEAD
+=======
+import { doc, collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { auth, db } from './firebase'
+
+
+>>>>>>> 61b7f86 (5/19--)
 function NoteNameQuiz({ onBack }) {
   const [clef, setClef] = useState(null)
   const [bassMode, setBassMode] = useState('normal')
@@ -12,10 +23,15 @@ function NoteNameQuiz({ onBack }) {
   const [questionNumber, setQuestionNumber] = useState(0)
   const [score, setScore] = useState(0)
   const [message, setMessage] = useState('')
+<<<<<<< HEAD
+=======
+  const [usedKeys, setUsedKeys] = useState([])
+>>>>>>> 61b7f86 (5/19--)
  
   
 
   const BUTTONS = clef === 'bass'
+<<<<<<< HEAD
     ? ['ド', 'レ', 'ミ', 'ファ', 'ファ♯', 'ソ', 'ラ', 'シ', 'シ♭']
     : ['ド', 'レ', 'ミ', 'ファ', 'ソ', 'ラ', 'シ']
 
@@ -23,12 +39,34 @@ function NoteNameQuiz({ onBack }) {
     let next
     do {
       const n = noteList[Math.floor(Math.random() * noteList.length)]
+=======
+    ? ['ド','ド♯', 'レ', 'ミ', 'ファ', 'ファ♯', 'ソ', 'ラ', 'シ'
+    ]
+    : ['ド', 'レ', 'ミ', 'ファ', 'ソ', 'ラ', 'シ']
+
+  const nextNote = (prevKey = null) => {
+    // 🔍 未出題の候補を優先
+    const unused = noteList.filter(n => !usedKeys.includes(`${n.note}/${n.octave}`))
+    const pool = unused.length > 0 ? unused : noteList
+
+    let next
+    
+    do {
+      const n = pool[Math.floor(Math.random() * pool.length)]
+>>>>>>> 61b7f86 (5/19--)
       next = {
         ...n,
         key: `${n.note}/${n.octave}`,
         letter: n.jp
       }
     } while (prevKey && next.key === prevKey)
+<<<<<<< HEAD
+=======
+
+    // ✅ 出題済みとして記録
+    setUsedKeys(prev => [...prev, next.key])
+     
+>>>>>>> 61b7f86 (5/19--)
     setCurrentNote(next)
   }
 
@@ -37,7 +75,11 @@ function NoteNameQuiz({ onBack }) {
     const div = document.getElementById('staff')
     div.innerHTML = ''
     const renderer = new Renderer(div, Renderer.Backends.SVG)
+<<<<<<< HEAD
     renderer.resize(250, 150)
+=======
+    renderer.resize(250, 180)
+>>>>>>> 61b7f86 (5/19--)
     const context = renderer.getContext()
     const stave = new Stave(10, 40, 230)
     stave.addClef(clef)
@@ -45,14 +87,47 @@ function NoteNameQuiz({ onBack }) {
       stave.addKeySignature('Bb')
     }
     stave.setContext(context).draw()
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 61b7f86 (5/19--)
     const note = new StaveNote({
       keys: [currentNote.key],
       duration: 'q',
       clef: clef
     })
+<<<<<<< HEAD
     if (currentNote.accidental) {
       note.addModifier(new Accidental(currentNote.accidental), 0)
     }
+=======
+
+   // 🎯 臨時記号処理（ヘ音記号では調号b-dur＝bb, eb）
+    const KEY_SIGNATURE_FLATS = clef === 'bass' ? ['bb', 'eb'] : []
+    const isAccidentalNote =
+    currentNote.note.length === 2 &&
+    (currentNote.note[1] === '#' || currentNote.note[1] === 'b')
+
+
+    if (clef === 'bass') {
+      if (currentNote.note === 'b' || currentNote.note === 'e') {
+        // 調号で♭が付くのでナチュラルを表示
+        note.addModifier(new Accidental('n'))
+      } else if (isAccidentalNote && !KEY_SIGNATURE_FLATS.includes(currentNote.note)) {
+        // 調号で付かない ♯ or ♭ は表示
+        const accidentalChar = currentNote.note.includes('#') ? '#' : 'b'
+        note.addModifier(new Accidental(accidentalChar))
+      }
+    } else {
+      
+     // ト音記号など調号のない場合はすべて表示
+      if (isAccidentalNote) {
+        const accidentalChar = currentNote.note.includes('#') ? '#' : 'b'
+        note.addModifier(new Accidental(accidentalChar))
+     }
+    }
+
+>>>>>>> 61b7f86 (5/19--)
     Formatter.FormatAndDraw(context, stave, [note])
   }, [currentNote])
 
@@ -64,13 +139,18 @@ function NoteNameQuiz({ onBack }) {
     } else {
       setMessage(`❌ 不正解… 正解は「${currentNote.jp}」`)
     }
+<<<<<<< HEAD
     if (questionNumber < 9) {
+=======
+    if (questionNumber < 19) {
+>>>>>>> 61b7f86 (5/19--)
       setTimeout(() => {
         nextNote(currentNote.key)
         setQuestionNumber(questionNumber + 1)
         setMessage('')
       }, 1000)
     } else {
+<<<<<<< HEAD
       setMessage(`🎉 終了！スコア：${score + (correct ? 1 : 0)} / 10`)
     }
   }
@@ -82,6 +162,48 @@ function NoteNameQuiz({ onBack }) {
     } else {
       notes = TREBLE_NOTE_RANGES[lv]
     }
+=======
+       const finalScore = score + (correct ? 1 : 0)
+       setMessage(`🎉 終了！スコア：${finalScore} / 20`)
+      // Firestore に記録
+       recordHistory('note', level, finalScore, 10).catch(console.error)     
+    }
+
+    // 終了処理内（例: スコア表示直前）で追加
+    if (questionNumber === 19) {
+     (async () => {
+       const user = auth.currentUser
+        if (user) {
+          await addDoc(collection(doc(db, 'users', user.uid), 'history'), {
+          quizType: 'notename',
+          clef,
+          bassMode: bassMode || null,
+          level,
+          score: score + (correct ? 1 : 0),
+          timestamp: serverTimestamp()
+           })
+        }
+      })()
+    }
+
+  }
+
+  const startLevel = (lv) => {
+    let notes = []
+  
+    if (clef === 'bass') {
+      const source = bassMode === 'tuba' ? BASS_TUBA_NOTE_RANGES : BASS_NOTE_RANGES
+      for (let i = 1; i <= lv; i++) {
+        if (source[i]) notes = notes.concat(source[i])
+      }
+    } else {
+      for (let i = 1; i <= lv; i++) {
+        if (TREBLE_NOTE_RANGES[i]) notes = notes.concat(TREBLE_NOTE_RANGES[i])
+      }
+    }
+
+    setUsedKeys([])
+>>>>>>> 61b7f86 (5/19--)
     setLevel(lv)
     setNoteList(notes)
     setScore(0)
@@ -121,14 +243,32 @@ function NoteNameQuiz({ onBack }) {
   return (
     <div style={{ textAlign: 'center' }}>
       <button onClick={() => setLevel(null)}>← レベル選択に戻る</button>
+<<<<<<< HEAD
       <div id="staff" style={{ margin: '20px auto' }}></div>
       {BUTTONS.map((l) => (
         <button key={l} onClick={() => handleAnswer(l)}>{l}</button>
       ))}
+=======
+  
+      <div id="staff" style={{ margin: '20px auto', minHeight: '140px' }}></div>  
+  
+      <div style={{ marginTop: '40px' }}> 
+        {BUTTONS.map((b) => (
+          <button key={b} onClick={() => handleAnswer(b)} style={{ margin: '5px' }}>
+            {b.split('').join('\n')}
+          </button>
+        ))}
+      </div>
+  
+>>>>>>> 61b7f86 (5/19--)
       <p>{message}</p>
     </div>
   )
   
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 61b7f86 (5/19--)
 }
 
 export default NoteNameQuiz
