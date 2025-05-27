@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Renderer } from 'vexflow'
 import { Stave, StaveNote, Formatter, Accidental } from 'vexflow'
-import { TREBLE_RANGES, BASS_RANGES, BASS_TUBA_RANGES } from './data/fingeringRanges'
+import { TREBLE_RANGES, BASS_RANGES, BASS_TUBA_RANGES, TROMBONE_RANGES } from './data/fingeringRanges'
 import { TREBLE_FINGERING_DATA } from './data/fingeringRanges'
 import { BASS_FINGERING_DATA } from './data/fingeringRanges'
 import { TUBA_FINGERING_DATA } from './data/fingeringRanges'
+import { TROMBONE_FINGERING_DATA } from './data/fingeringRanges'
 import { db, auth } from './firebase'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 
 function FingeringQuiz({ onBack }) {
-  const [clef, setClef] = useState(null);         // 'treble' or 'bass'
   const [instrument, setInstrument] = useState(null); // 'euphonium', 'trombone', 'tuba'
-  const [bassMode, setBassMode] = useState(null)
   const [level, setLevel] = useState(null)
   const [noteList, setNoteList] = useState([])
   const [currentNote, setCurrentNote] = useState(null)
@@ -22,38 +21,44 @@ function FingeringQuiz({ onBack }) {
 
   const SLIDE_BUTTONS = ['1', '2', '3', '4', '5', '6', '7']
   const VALVE_BUTTONS = ['0', '1', '2', '3', '12', '13', '23', '123']
-  const BUTTONS = (clef === 'bass' && bassMode === 'trombone') ? SLIDE_BUTTONS : VALVE_BUTTONS
+  const BUTTONS = (instrument === 'trombone') ? SLIDE_BUTTONS : VALVE_BUTTONS
 
   const getFingeringData = () => {
-    if (clef === 'treble') return TREBLE_FINGERING_DATA
-    if (clef === 'bass' && bassMode === 'normal') return BASS_FINGERING_DATA
-    if (clef === 'bass' && bassMode === 'tuba') return TUBA_FINGERING_DATA
+    if (instrument === 'trumpet') return TREBLE_FINGERING_DATA
+    if (instrument === 'euphonium') return BASS_FINGERING_DATA
+    if (instrument === 'tuba') return TUBA_FINGERING_DATA
+    if (instrument === 'trombone') return TROMBONE_FINGERING_DATA
     return {}
   }
 
   const startLevel = (lv) => {
     let range = []
-    if (clef === 'treble') {
+
+    if (instrument === 'trumpet') {
       for (let i = 1; i <= lv; i++) {
         if (TREBLE_RANGES[i]) range = range.concat(TREBLE_RANGES[i])
       }
-    } else if (clef === 'bass' && bassMode === 'normal') {
+    } else if (instrument === 'euphonium') {
       for (let i = 1; i <= lv; i++) {
         if (BASS_RANGES[i]) range = range.concat(BASS_RANGES[i])
       }
-    } else if (clef === 'bass' && bassMode === 'tuba') {
+    } else if (instrument === 'tuba') {
       for (let i = 1; i <= lv; i++) {
         if (BASS_TUBA_RANGES[i]) range = range.concat(BASS_TUBA_RANGES[i])
       }
+    } else if (instrument === 'trombone') {
+      for (let i = 1; i <= lv; i++) {
+        if (TROMBONE_RANGES[i]) range = range.concat(TROMBONE_RANGES[i])
+      }
     }
+
 
     // Firebaseに記録
     const user = auth.currentUser
     if (user) {
       addDoc(collection(db, 'users', user.uid, 'history'), {
         quizType: 'fingering',
-        clef,
-        bassMode: clef === 'bass' ? bassMode : null,
+        instrument,
         level: lv,
         score: null,
         timestamp: serverTimestamp()
@@ -85,6 +90,11 @@ function FingeringQuiz({ onBack }) {
       })
       .filter(Boolean)
 
+
+    console.log('🎺 instrument:', instrument)
+    console.log('🎯 level:', level)
+    console.log('🎲 range:', range)
+
     if (candidates.length === 0) {
       console.error('⚠️ 出題候補がありません')
       return null
@@ -109,32 +119,40 @@ function FingeringQuiz({ onBack }) {
   useEffect(() => {
     if (!currentNote) return
     const div = document.getElementById('staff')
+    if (!div) {
+      console.warn('⚠️ staff 要素が見つかりません')
+      return
+    }
+
     div.innerHTML = ''
     const renderer = new Renderer(div, Renderer.Backends.SVG)
     renderer.resize(250, 180)
     const context = renderer.getContext()
     const stave = new Stave(10, 40, 230)
+    const clefToUse = (instrument === 'trumpet') ? 'treble' : 'bass'
 
-    stave.addClef(clef)
+    stave.addClef(clefToUse)
 
-    if (clef === 'bass') {
+    if (clefToUse === 'bass') {
       stave.addKeySignature('Bb')
     }
+
+
     stave.setContext(context).draw()
 
     const note = new StaveNote({
       keys: [currentNote.key],
       duration: 'q',
-      clef: clef
+      clef: clefToUse
     })
 
-    const KEY_SIGNATURE_FLATS = clef === 'bass' ? ['bb', 'eb'] : []
+    const KEY_SIGNATURE_FLATS = clefToUse === 'bass' ? ['bb', 'eb'] : []
 
     const isAccidentalNote =
       currentNote.note.length === 2 &&
       (currentNote.note[1] === '#' || currentNote.note[1] === 'b')
 
-    if (clef === 'bass') {
+    if (clefToUse === 'bass') {
       if (currentNote.note === 'b' || currentNote.note === 'e') {
         note.addModifier(new Accidental('n'))
       } else if (isAccidentalNote && !KEY_SIGNATURE_FLATS.includes(currentNote.note)) {
@@ -172,46 +190,33 @@ function FingeringQuiz({ onBack }) {
       if (user) {
         addDoc(collection(db, 'users', user.uid, 'history'), {
           quizType: 'fingering',
-          clef,
-          bassMode: clef === 'bass' ? bassMode : null,
-          level,
-          score: score + (correct ? 1 : 0),
+          instrument,
+          level: level,
+          score: null,
           timestamp: serverTimestamp()
         })
       }
     }
   }
 
-  if (!clef) {
+  if (!instrument) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h2>記号を選んでください</h2>
+        <h2>楽器を選んでください</h2>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', marginTop: '24px' }}>
-          <button onClick={() => {
-            setClef('treble');
-            setInstrument('trumpet');
-          }}>
+          <button onClick={() => setInstrument('trumpet')}>
             🎼 ト音記号（トランペットなど）
           </button>
 
-          <button onClick={() => {
-            setClef('bass');
-            setInstrument('euphonium');
-          }}>
+          <button onClick={() => setInstrument('euphonium')}>
             𝄢 ヘ音記号（ユーフォニアム）
           </button>
 
-          <button onClick={() => {
-            setClef('bass');
-            setInstrument('trombone');
-          }}>
+          <button onClick={() => setInstrument('trombone')}>
             𝄢 ヘ音記号（トロンボーン）
           </button>
 
-          <button onClick={() => {
-            setClef('bass');
-            setInstrument('tuba');
-          }}>
+          <button onClick={() => setInstrument('tuba')}>
             𝄢 ヘ音記号（チューバ）
           </button>
 
@@ -230,8 +235,8 @@ function FingeringQuiz({ onBack }) {
         ))}
         <br /><br />
         <button onClick={() => {
-          setBassMode(null)
-          setClef(null)
+          setInstrument(null)
+          
         }}>← 記号選択に戻る</button>
       </div>
     )
