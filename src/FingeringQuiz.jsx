@@ -242,6 +242,8 @@ function FingeringQuiz({ onBack }) {
     )
   }
 
+
+  
   return (
     <div style={{ textAlign: 'center' }}>
       <button onClick={() => setLevel(null)}>← レベル選択に戻る</button>
