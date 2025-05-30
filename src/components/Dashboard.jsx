@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { collection, query, orderBy, getDocs } from 'firebase/firestore'
 import { db, auth } from '../firebase'
 
-function Dashboard({ onBack }) {
+function Dashboard({ userId, onBack }) {
   const [userList, setUserList] = useState([])
-  const [selectedUser, setSelectedUser] = useState(auth.currentUser.uid)
+  const [selectedUser, setSelectedUser] = useState(userId || '') // ← 修正
   const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -13,8 +13,11 @@ function Dashboard({ onBack }) {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const usersSnap = await getDocs(collection(db, 'users'))
-        const users = usersSnap.docs.map(doc => doc.id)
+        const usersSnap = await getDocs(collection(db, 'users'))  // ← これを追加
+        const users = usersSnap.docs.map(doc => ({
+          uid: doc.id,
+          displayName: doc.data().displayName || doc.id  // fallback
+        }))
         setUserList(users)
       } catch (err) {
         console.error(err)
@@ -23,6 +26,12 @@ function Dashboard({ onBack }) {
     }
     fetchUsers()
   }, [])
+
+  useEffect(() => {
+    if (userId) {
+      setSelectedUser(userId)
+    }
+  }, [userId])
 
   // 選択ユーザーの履歴を取得
   useEffect(() => {
@@ -56,14 +65,16 @@ function Dashboard({ onBack }) {
       <h2>ユーザーの学習履歴</h2>
       <div style={{ marginBottom: 20 }}>
         <label>
-          ユーザーID: 
+          ユーザー名:
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
             style={{ marginLeft: 10 }}
           >
-            {userList.map(uid => (
-              <option key={uid} value={uid}>{uid}</option>
+            {userList.map(user => (
+              <option key={user.uid} value={user.uid}>
+                {user.displayName}
+              </option>
             ))}
           </select>
         </label>
