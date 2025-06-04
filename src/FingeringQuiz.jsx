@@ -53,17 +53,7 @@ function FingeringQuiz({ onBack }) {
     }
 
 
-    // Firebaseに記録
-    const user = auth.currentUser
-    if (user) {
-      addDoc(collection(db, 'users', user.uid, 'history'), {
-        quizType: 'fingering',
-        instrument,
-        level: lv,
-        score: null,
-        timestamp: serverTimestamp()
-      })
-    }
+    // 開始時点ではまだスコアが確定しないため記録しない
 
     setNoteList(range)
     setLevel(lv)
@@ -192,7 +182,7 @@ function FingeringQuiz({ onBack }) {
           quizType: 'fingering',
           instrument,
           level: level,
-          score: null,
+          score: score + (correct ? 1 : 0),
           timestamp: serverTimestamp()
         })
       }
