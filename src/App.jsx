@@ -5,6 +5,7 @@ import NoteNameQuiz from './NoteNameQuiz'
 import FingeringQuiz from './FingeringQuiz'
 import UsersList from './components/UsersList'
 import Dashboard from './components/Dashboard'
+import Profile from './Profile'
 
 /**
  * App コンポーネント
@@ -33,6 +34,11 @@ function App({ isAdmin }) {
     return <FingeringQuiz onBack={() => setMode('menu')} />
   }
 
+  // プロフィール編集
+  if (mode === 'profile') {
+    return <Profile onBack={() => setMode('menu')} />
+  }
+
   // 管理：ユーザー一覧
   if (mode === 'usersList') {
     return (
@@ -59,6 +65,7 @@ function App({ isAdmin }) {
         <button onClick={() => setMode('note')}>音名クイズ</button>
         <button onClick={() => setMode('fingering')}>運指クイズ</button>
         {isAdmin && <button onClick={() => setMode('usersList')}>ユーザー管理</button>}
+        <button onClick={() => setMode('profile')}>プロフィール</button>
         <button onClick={handleLogout}>ログアウト</button>
       </div>
     </div>
