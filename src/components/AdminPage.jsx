@@ -9,7 +9,7 @@ export default function AdminPage() {
     <div>
       {selectedUid ? (
         <Dashboard
-          selectedUid={selectedUid}
+          userId={selectedUid}
           onBack={() => setSelectedUid(null)} // 戻るときにユーザー選択をクリア
         />
       ) : (
