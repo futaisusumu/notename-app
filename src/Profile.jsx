@@ -30,7 +30,6 @@ function Profile({ onBack, uid, isAdmin }) {
         await updateProfile(current, { displayName })
       }
       await setDoc(doc(db, 'users', targetUid), { displayName }, { merge: true })
-
       alert('プロフィールを更新しました')
       onBack()
     } catch (err) {
