@@ -6,7 +6,7 @@ import { db } from '../firebase'
  * ユーザー一覧コンポーネント
  * 管理者向けに全ユーザーを表示し、最後の問題取り組み時間・内容・成績でソート表示
  */
-export default function UsersList({ onSelect, onBack }) {
+export default function UsersList({ onSelect, onBack, onEditProfile }) {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [sortField, setSortField] = useState('lastActivity')
@@ -97,6 +97,7 @@ export default function UsersList({ onSelect, onBack }) {
             <th style={{ border: '1px solid #ccc', padding: 8 }}>音名クイズ</th>
             <th style={{ border: '1px solid #ccc', padding: 8 }}>運指クイズ</th>
             <th style={{ border: '1px solid #ccc', padding: 8 }}>詳細</th>
+            <th style={{ border: '1px solid #ccc', padding: 8 }}>編集</th>
           </tr>
         </thead>
         <tbody>
@@ -122,6 +123,9 @@ export default function UsersList({ onSelect, onBack }) {
               <td style={{ border: '1px solid #ccc', padding: 8 }}>{u.fingeringSummary}</td>
               <td style={{ border: '1px solid #ccc', padding: 8 }}>
                 <button onClick={() => onSelect(u.uid)}>履歴を見る</button>
+              </td>
+              <td style={{ border: '1px solid #ccc', padding: 8 }}>
+                <button onClick={() => onEditProfile(u.uid)}>編集</button>
               </td>
             </tr>
           ))}

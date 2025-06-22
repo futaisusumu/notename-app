@@ -30,6 +30,10 @@ body {
   min-height: 100vh;
 }
 
+#root {
+  padding-left: 20px;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
