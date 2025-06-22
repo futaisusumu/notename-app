@@ -37,6 +37,7 @@ function App({ isAdmin }) {
 
   // プロフィール編集
   if (mode === 'profile') {
+
     return (
       <Profile
         uid={editUid}
@@ -44,6 +45,7 @@ function App({ isAdmin }) {
         onBack={() => setMode('menu')}
       />
     )
+
   }
 
   // 管理：ユーザー一覧
@@ -76,7 +78,9 @@ function App({ isAdmin }) {
         <button onClick={() => setMode('note')}>音名クイズ</button>
         <button onClick={() => setMode('fingering')}>運指クイズ</button>
         {isAdmin && <button onClick={() => setMode('usersList')}>ユーザー管理</button>}
+
         <button onClick={() => { setEditUid(null); setMode('profile'); }}>プロフィール</button>
+
         <button onClick={handleLogout}>ログアウト</button>
       </div>
     </div>
