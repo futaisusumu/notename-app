@@ -1,24 +1,36 @@
 import { useState, useEffect } from 'react'
 import { auth, db } from './firebase'
 import { updateProfile } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc } from 'firebase/firestore'
 
-function Profile({ onBack }) {
-  const user = auth.currentUser
+function Profile({ onBack, uid, isAdmin }) {
+  const current = auth.currentUser
+  const targetUid = isAdmin && uid ? uid : current?.uid
+  const isSelf = targetUid === current?.uid
   const [displayName, setDisplayName] = useState('')
 
   useEffect(() => {
-    if (user) {
-      setDisplayName(user.displayName || '')
+    if (!targetUid) return
+    async function fetchName() {
+      if (isSelf) {
+        setDisplayName(current?.displayName || '')
+      } else {
+        const snap = await getDoc(doc(db, 'users', targetUid))
+        setDisplayName(snap.exists() ? snap.data().displayName || '' : '')
+      }
     }
-  }, [user])
+    fetchName()
+  }, [targetUid, isSelf, current])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!user) return
+    if (!targetUid) return
     try {
-      await updateProfile(user, { displayName })
-      await setDoc(doc(db, 'users', user.uid), { displayName }, { merge: true })
+      if (isSelf && current) {
+        await updateProfile(current, { displayName })
+      }
+      await setDoc(doc(db, 'users', targetUid), { displayName }, { merge: true })
+
       alert('プロフィールを更新しました')
       onBack()
     } catch (err) {
