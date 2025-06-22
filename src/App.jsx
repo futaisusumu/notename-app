@@ -15,6 +15,7 @@ function App({ isAdmin }) {
   const [mode, setMode] = useState('menu')
   const [selectedUid, setSelectedUid] = useState(null)
   const [editUid, setEditUid] = useState(null)
+  const [profileBack, setProfileBack] = useState('menu')
 
   // ログアウト処理
   const handleLogout = async () => {
@@ -37,9 +38,21 @@ function App({ isAdmin }) {
 
   // プロフィール編集
   if (mode === 'profile') {
-
+        onBack={() => {
+          setEditUid(null)
+          setMode(profileBack)
+        }}
     return (
-      <Profile
+          setProfileBack('usersList')
+        <button
+          onClick={() => {
+            setEditUid(null)
+            setProfileBack('menu')
+            setMode('profile')
+          }}
+        >
+          プロフィール
+        </button>
         uid={editUid}
         isAdmin={isAdmin}
         onBack={() => setMode('menu')}
