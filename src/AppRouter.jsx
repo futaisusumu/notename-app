@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { onAuthStateChanged, getIdTokenResult } from 'firebase/auth'
 import { auth } from './firebase'
 import App from './App'
-import Login from './Login'
+import Login from './login'
 
 function AppRouter() {
   const [user, setUser]     = useState(null)
