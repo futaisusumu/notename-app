@@ -4,8 +4,7 @@ import { Renderer } from 'vexflow'
 import { Stave, StaveNote, Formatter, Accidental } from 'vexflow'
 import { TREBLE_NOTE_RANGES, BASS_NOTE_RANGES, BASS_TUBA_NOTE_RANGES } from './data/noteNameRanges'
 
-import { doc, collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { auth, db } from './firebase'
+// Firebase は recordHistory 内で使用
 
 
 function NoteNameQuiz({ onBack }) {
@@ -113,26 +112,11 @@ function NoteNameQuiz({ onBack }) {
     } else {
        const finalScore = score + (correct ? 1 : 0)
        setMessage(`🎉 終了！スコア：${finalScore} / 20`)
-      // Firestore に記録
-       recordHistory('note', level, finalScore, 10).catch(console.error)     
+      // Firestore に記録（全20問）
+      recordHistory('note', level, finalScore, 20).catch(console.error)
     }
 
-    // 終了処理内（例: スコア表示直前）で追加
-    if (questionNumber === 19) {
-     (async () => {
-       const user = auth.currentUser
-        if (user) {
-          await addDoc(collection(doc(db, 'users', user.uid), 'history'), {
-          quizType: 'notename',
-          clef,
-          bassMode: bassMode || null,
-          level,
-          score: score + (correct ? 1 : 0),
-          timestamp: serverTimestamp()
-           })
-        }
-      })()
-    }
+    // フィニッシュ時のみ記録するため上記以外では何もしない
 
   }
 
