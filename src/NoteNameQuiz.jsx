@@ -17,6 +17,8 @@ function NoteNameQuiz({ onBack }) {
   const [score, setScore] = useState(0)
   const [message, setMessage] = useState('')
   const [usedKeys, setUsedKeys] = useState([])
+  const [isFinished, setIsFinished] = useState(false)
+
  
   
 
@@ -96,6 +98,7 @@ function NoteNameQuiz({ onBack }) {
   }, [currentNote])
 
   const handleAnswer = (letter) => {
+    if (isFinished) return//回答終了後は無視
     const correct = letter === currentNote.jp
     if (correct) {
       setScore(score + 1)
@@ -112,6 +115,7 @@ function NoteNameQuiz({ onBack }) {
     } else {
        const finalScore = score + (correct ? 1 : 0)
        setMessage(`🎉 終了！スコア：${finalScore} / 20`)
+       setIsFinished(true)//追加
       // Firestore に記録（全20問）
       recordHistory('note', level, finalScore, 20).catch(console.error)
     }
@@ -121,6 +125,7 @@ function NoteNameQuiz({ onBack }) {
   }
 
   const startLevel = (lv) => {
+    setIsFinished(false) // 🔴 startLevel 内で忘れずに
     let notes = []
   
     if (clef === 'bass') {
