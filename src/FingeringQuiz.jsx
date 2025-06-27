@@ -19,6 +19,7 @@ function FingeringQuiz({ onBack }) {
   const [score, setScore] = useState(0)
   const [message, setMessage] = useState('')
   const [usedKeys, setUsedKeys] = useState([])
+  const [isFinished, setIsFinished] = useState(false)
 
   const SLIDE_BUTTONS = ['1', '2', '3', '4', '5', '6', '7']
   const VALVE_BUTTONS = ['0', '1', '2', '3', '12', '13', '23', '123']
@@ -33,6 +34,7 @@ function FingeringQuiz({ onBack }) {
   }
 
   const startLevel = (lv) => {
+    setIsFinished(false)
     let range = []
 
     if (instrument === 'trumpet') {
@@ -161,6 +163,7 @@ function FingeringQuiz({ onBack }) {
   }, [currentNote])
 
   const handleAnswer = (ans) => {
+    if (isFinished) return // 終了後の入力は無視
     const correct = ans === currentNote.fingering
     if (correct) {
       setScore(score + 1)
@@ -178,6 +181,7 @@ function FingeringQuiz({ onBack }) {
     } else {
       const finalScore = score + (correct ? 1 : 0)
       setMessage(`🎉 終了！スコア：${finalScore} / 20`)
+      setIsFinished(true)
       // 全20問の結果を Firestore に記録
       recordHistory('fingering', level, finalScore, 20).catch(console.error)
     }
