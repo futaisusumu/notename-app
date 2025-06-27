@@ -6,8 +6,9 @@ import { TREBLE_FINGERING_DATA } from './data/fingeringRanges'
 import { BASS_FINGERING_DATA } from './data/fingeringRanges'
 import { TUBA_FINGERING_DATA } from './data/fingeringRanges'
 import { TROMBONE_FINGERING_DATA } from './data/fingeringRanges'
-import { db, auth } from './firebase'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { recordHistory } from './services/history'
+
+// Firebase は recordHistory 内で使用
 
 function FingeringQuiz({ onBack }) {
   const [instrument, setInstrument] = useState(null); // 'euphonium', 'trombone', 'tuba'
@@ -175,17 +176,10 @@ function FingeringQuiz({ onBack }) {
         setMessage('')
       }, 1000)
     } else {
-      setMessage(`🎉 終了！スコア：${score + (correct ? 1 : 0)} / 20`)
-      const user = auth.currentUser
-      if (user) {
-        addDoc(collection(db, 'users', user.uid, 'history'), {
-          quizType: 'fingering',
-          instrument,
-          level: level,
-          score: score + (correct ? 1 : 0),
-          timestamp: serverTimestamp()
-        })
-      }
+      const finalScore = score + (correct ? 1 : 0)
+      setMessage(`🎉 終了！スコア：${finalScore} / 20`)
+      // 全20問の結果を Firestore に記録
+      recordHistory('fingering', level, finalScore, 20).catch(console.error)
     }
   }
 
