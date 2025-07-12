@@ -6,6 +6,7 @@ import FingeringQuiz from './FingeringQuiz'
 import UsersList from './components/UsersList'
 import Dashboard from './components/Dashboard'
 import Profile from './Profile'
+import AddUser from './components/AddUser'
 
 /**
  * App コンポーネント
@@ -67,9 +68,15 @@ function App({ isAdmin }) {
 
           setMode('profile')
         }}
+        onAddUser={() => setMode('addUser')}
         onBack={() => setMode('menu')}
       />
     )
+  }
+
+  // 管理：ユーザー追加
+  if (mode === 'addUser') {
+    return <AddUser onBack={() => setMode('usersList')} />
   }
 
   // 管理：選択ユーザーの履歴
