@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { initializeApp, deleteApp } from 'firebase/app'
 import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
-import { db } from '../firebase'
-import { firebaseConfig } from '../firebase'
+import { doc, setDoc, getFirestore } from 'firebase/firestore'
+import { db, firebaseConfig } from '../firebase'
 
 function AddUser({ onBack }) {
   const [email, setEmail] = useState('')
@@ -19,12 +18,13 @@ function AddUser({ onBack }) {
     try {
       const secondaryApp = initializeApp(firebaseConfig, 'Secondary')
       const secondaryAuth = getAuth(secondaryApp)
+      const secondaryDb = getFirestore(secondaryApp)
 
       const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password)
       if (displayName) {
         await updateProfile(cred.user, { displayName })
       }
-      await setDoc(doc(db, 'users', cred.user.uid), { email, displayName })
+      await setDoc(doc(secondaryDb, 'users', cred.user.uid), { email, displayName })
       await signOut(secondaryAuth)
       await deleteApp(secondaryApp)
       alert('ユーザーを追加しました')
