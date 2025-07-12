@@ -6,7 +6,7 @@ import { db } from '../firebase'
  * ユーザー一覧コンポーネント
  * 管理者向けに全ユーザーを表示し、最後の問題取り組み時間・内容・成績でソート表示
  */
-export default function UsersList({ onSelect, onBack, onEditProfile }) {
+export default function UsersList({ onSelect, onBack, onEditProfile, onAddUser }) {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [sortField, setSortField] = useState('lastActivity')
@@ -80,7 +80,12 @@ export default function UsersList({ onSelect, onBack, onEditProfile }) {
 
   return (
     <div style={{ maxWidth: 800, margin: '20px auto', textAlign: 'center' }}>
-      <button onClick={onBack} style={{ marginBottom: 10 }}>← 戻る</button>
+      <div style={{ marginBottom: 10 }}>
+        <button onClick={onBack} style={{ marginRight: 10 }}>← 戻る</button>
+        {onAddUser && (
+          <button onClick={onAddUser}>＋ 追加</button>
+        )}
+      </div>
       <h2>ユーザー一覧</h2>
       <table style={{ width: '100%', borderCollapse: 'collapse', cursor: 'pointer' }}>
         <thead>

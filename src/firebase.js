@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyAIc95CgEsloU7KPtRaAHtrklypvKEXUIA",
     authDomain: "notename-app.firebaseapp.com",
     projectId: "notename-app",
