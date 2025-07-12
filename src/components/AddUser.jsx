@@ -20,11 +20,19 @@ function AddUser({ onBack }) {
       const secondaryApp = initializeApp(firebaseConfig, 'Secondary')
       const secondaryAuth = getAuth(secondaryApp)
 
-      const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password)
+      const cleanEmail = email.trim()
+      const cred = await createUserWithEmailAndPassword(
+        secondaryAuth,
+        cleanEmail,
+        password,
+      )
       if (displayName) {
         await updateProfile(cred.user, { displayName })
       }
-      await setDoc(doc(db, 'users', cred.user.uid), { email, displayName })
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        email: cleanEmail,
+        displayName,
+      })
       await signOut(secondaryAuth)
       await deleteApp(secondaryApp)
       alert('ユーザーを追加しました')
